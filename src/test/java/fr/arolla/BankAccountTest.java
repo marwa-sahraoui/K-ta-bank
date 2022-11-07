@@ -14,7 +14,7 @@ public class BankAccountTest {
     //WHEN
         bankAccount.deposit(BigDecimal.valueOf(50));
     //THEN
-        assertThat(bankAccount.getBalance()).isEqualTo(50);
+        assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(50));
     }
 
 

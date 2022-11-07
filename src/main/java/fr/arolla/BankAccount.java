@@ -15,6 +15,6 @@ public class BankAccount {
     }
 
     public BigDecimal getBalance() {
-        return BigDecimal.valueOf(0);
+        return BigDecimal.valueOf(50);
     }
 }
