@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class BankAccountTest {
     @Test
@@ -23,14 +24,14 @@ public class BankAccountTest {
 
     @ParameterizedTest
     @CsvSource({"50,150", "100,200", "200,300"})
-    void depositAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
+    public void depositAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
         BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(100));
         bankAccount.deposit(amount,LocalDate.of(2001,11,10));
         assertThat(bankAccount.getBalance()).isEqualTo(expectedAmount);
     }
     @ParameterizedTest
     @CsvSource({"50,950", "200,800", "500,500"})
-     void withdrawAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
+     public void withdrawAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
         //GIVEN
         BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(1000));
         //WHEN
@@ -38,5 +39,14 @@ public class BankAccountTest {
         //THEN
         assertThat(bankAccount.getBalance()).isEqualTo(expectedAmount);
     }
-
+    @Test
+    public void should_return50WhenDeposit100AndWithrawed50(){
+        //GIVEN
+        BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(0));
+        //WHEN
+        bankAccount.deposit(BigDecimal.valueOf(100), LocalDate.of(2000,10,10));
+        bankAccount.withdraw(BigDecimal.valueOf(50), LocalDate.of(2000,10,11));
+        //THEN
+        assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(50));
+    }
 }
