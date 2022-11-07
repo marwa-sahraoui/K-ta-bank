@@ -40,7 +40,7 @@ public class BankAccountTest {
         assertThat(bankAccount.getBalance()).isEqualTo(expectedAmount);
     }
     @Test
-    public void should_return50WhenDeposit100AndWithrawed50(){
+    public void should_return50_When_Deposit100_And_Withrawed_50(){
         //GIVEN
         BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(0));
         //WHEN
@@ -49,4 +49,13 @@ public class BankAccountTest {
         //THEN
         assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(50));
     }
+    @Test
+    public void exceptionThrown_when_withdrawed_amount_is_higher_than_balance(){
+        BankAccount bankAccount = new BankAccount("abc",new BigDecimal("50"));
+        assertThatThrownBy(()->bankAccount.withdraw(BigDecimal.valueOf(300),LocalDate.of(2007,10,11)))
+                .isInstanceOf(NotEnoughMoneyException.class);
+
+        assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(50));
+    }
+
 }

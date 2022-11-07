@@ -25,17 +25,31 @@ public class BankAccount {
       BigDecimal calculateBalance = initBalance;
 
       for(Transaction transaction: transactions){
-         if(transaction.getType().equals(TransactionType.DEPOSIT)){
+         if(isDeposit(transaction)){
              calculateBalance = calculateBalance.add(transaction.getAmount());
          }
-          if(transaction.getType().equals(TransactionType.WITHDRAW)){
+          if(isWithdraw(transaction)){
               calculateBalance = calculateBalance.subtract(transaction.getAmount());
           }
       }
         return calculateBalance;
     }
 
+    private static boolean isWithdraw(Transaction transaction) {
+        return transaction.getType().equals(TransactionType.WITHDRAW);
+    }
+
+    private static boolean isDeposit(Transaction transaction) {
+        return transaction.getType().equals(TransactionType.DEPOSIT);
+    }
+
     public void withdraw(BigDecimal withdrawedAmount, LocalDate date) {
+        BigDecimal balance = getBalance();
+        if(withdrawedAmount.compareTo(balance) >0)
+
+            throw new NotEnoughMoneyException("you don't have enough money to withdraw!");
+
         transactions.add(new Transaction(withdrawedAmount,date,TransactionType.WITHDRAW));
+
     }
 }
