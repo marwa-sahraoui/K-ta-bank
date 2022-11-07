@@ -1,6 +1,8 @@
 package fr.arolla;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,23 +21,12 @@ public class BankAccountTest {
         assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(50));
     }
 
-    @Test
-    public void should_retrun_100_when_depositAmount_100_for_initBalance_with0(){
-        //GIVEN
-        BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(0));
-        //WHEN
-        bankAccount.deposit(BigDecimal.valueOf(100),LocalDate.of(2000,11,10));
-        //THEN
-        assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(100));
-    }
-    @Test
-    public void should_retrun_120_when_depositAmount_100_for_initBalance_with20(){
-        //GIVEN
-        BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(20));
-        //WHEN
-        bankAccount.deposit(BigDecimal.valueOf(100),LocalDate.of(2001,11,10));
-        //THEN
-        assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(120));
-    }
 
+    @ParameterizedTest
+    @CsvSource({"50,150", "100,200", "200,300"})
+    void depositAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
+        BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(100));
+        bankAccount.deposit(amount,LocalDate.of(2001,11,10));
+        assertThat(bankAccount.getBalance()).isEqualTo(expectedAmount);
+    }
 }
