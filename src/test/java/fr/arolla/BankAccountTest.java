@@ -21,7 +21,6 @@ public class BankAccountTest {
         assertThat(bankAccount.getBalance()).isEqualTo(BigDecimal.valueOf(50));
     }
 
-
     @ParameterizedTest
     @CsvSource({"50,150", "100,200", "200,300"})
     void depositAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
@@ -29,4 +28,15 @@ public class BankAccountTest {
         bankAccount.deposit(amount,LocalDate.of(2001,11,10));
         assertThat(bankAccount.getBalance()).isEqualTo(expectedAmount);
     }
+    @ParameterizedTest
+    @CsvSource({"50,950", "200,800", "500,500"})
+     void withdrawAmount_should_generate_theExpectedAmount(BigDecimal amount, BigDecimal expectedAmount){
+        //GIVEN
+        BankAccount bankAccount = new BankAccount("ABC",BigDecimal.valueOf(1000));
+        //WHEN
+        bankAccount.withdraw(amount, LocalDate.of(2000,10,10));
+        //THEN
+        assertThat(bankAccount.getBalance()).isEqualTo(expectedAmount);
+    }
+
 }

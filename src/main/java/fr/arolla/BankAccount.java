@@ -28,7 +28,14 @@ public class BankAccount {
          if(transaction.getType().equals(TransactionType.DEPOSIT)){
              calculateBalance = calculateBalance.add(transaction.getAmount());
          }
+          if(transaction.getType().equals(TransactionType.WITHDRAW)){
+              calculateBalance = calculateBalance.subtract(transaction.getAmount());
+          }
       }
         return calculateBalance;
+    }
+
+    public void withdraw(BigDecimal withdrawedAmount, LocalDate date) {
+        transactions.add(new Transaction(withdrawedAmount,date,TransactionType.WITHDRAW));
     }
 }
