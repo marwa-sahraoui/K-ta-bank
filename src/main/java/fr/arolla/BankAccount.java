@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class BankAccount {
     private String iban;
@@ -25,22 +26,27 @@ public class BankAccount {
       BigDecimal calculateBalance = initBalance;
 
       for(Transaction transaction: transactions){
-         if(isDeposit(transaction)){
-             calculateBalance = calculateBalance.add(transaction.getAmount());
-         }
-          if(isWithdraw(transaction)){
-              calculateBalance = calculateBalance.subtract(transaction.getAmount());
-          }
+          calculateBalance = getCalculateBalance(calculateBalance, transaction);
       }
         return calculateBalance;
     }
 
+    private static BigDecimal getCalculateBalance(BigDecimal calculateBalance, Transaction transaction) {
+        if(isDeposit(transaction)){
+            calculateBalance = calculateBalance.add(transaction.amount());
+        }
+        if(isWithdraw(transaction)){
+            calculateBalance = calculateBalance.subtract(transaction.amount());
+        }
+        return calculateBalance;
+    }
+
     private static boolean isWithdraw(Transaction transaction) {
-        return transaction.getType().equals(TransactionType.WITHDRAW);
+        return transaction.type().equals(TransactionType.WITHDRAW);
     }
 
     private static boolean isDeposit(Transaction transaction) {
-        return transaction.getType().equals(TransactionType.DEPOSIT);
+        return transaction.type().equals(TransactionType.DEPOSIT);
     }
 
     public void withdraw(BigDecimal withdrawedAmount, LocalDate date) {
@@ -51,5 +57,36 @@ public class BankAccount {
 
         transactions.add(new Transaction(withdrawedAmount,date,TransactionType.WITHDRAW));
 
+    }
+
+    public BigDecimal getBalanceWithSpeceficDate(LocalDate referenceDate) {
+        BigDecimal calculateBalance = initBalance;
+        for(Transaction transaction: transactions){
+            if(transaction.date().isEqual(referenceDate)){
+                calculateBalance = getCalculateBalance(calculateBalance, transaction);
+            }
+        }
+        return calculateBalance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BankAccount that)) return false;
+        return iban.equals(that.iban) && initBalance.equals(that.initBalance) && transactions.equals(that.transactions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(iban, initBalance, transactions);
+    }
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "iban='" + iban + '\'' +
+                ", initBalance=" + initBalance +
+                ", transactions=" + transactions +
+                '}';
     }
 }
