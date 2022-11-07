@@ -1,9 +1,12 @@
 package fr.arolla;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
@@ -66,6 +69,22 @@ public class BankAccountTest {
         bankAccount.deposit(BigDecimal.valueOf(200), LocalDate.of(2000,11,11));
         //THEN
         assertThat(bankAccount.getBalanceWithSpeceficDate(LocalDate.of(2000,10,10))).isEqualTo(BigDecimal.valueOf(500));
+    }
+    @Test
+    public void given_system_outRedirection_should_return_outputCaptorSuccess(){
+        //GIVEN
+        PrintStream standardOut = System.out;
+        ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStreamCaptor));
+        BankAccount bankAccount = new BankAccount("abc", new BigDecimal("400"));
+        //WHEN
+        bankAccount.deposit(BigDecimal.valueOf(100), LocalDate.of(2007, 10, 10));
+        bankAccount.withdraw(BigDecimal.valueOf(200), LocalDate.of(2007, 11, 10));
+        bankAccount.printTransactions();
+        //THEN
+        Assertions.assertThat(outputStreamCaptor.toString()).contains("Transaction[amount=100, date=2007-10-10, type=DEPOSIT]");
+        Assertions.assertThat(outputStreamCaptor.toString()).contains("Transaction[amount=200, date=2007-11-10, type=WITHDRAW]");
+
     }
 
 }

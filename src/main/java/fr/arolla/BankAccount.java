@@ -68,6 +68,10 @@ public class BankAccount {
         }
         return calculateBalance;
     }
+    public void printTransactions(){
+        transactions.forEach(System.out::println);
+        }
+
 
     @Override
     public boolean equals(Object o) {
